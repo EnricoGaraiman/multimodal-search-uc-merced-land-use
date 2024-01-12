@@ -12,6 +12,18 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
 def training_stage(PARAMETERS, dataset_train_loader, dataset_test_loader):
+    """
+    Training stage
+
+    @param PARAMETERS: global parameters
+    @type PARAMETERS: dict
+    @param dataset_train_loader: dataset train loader
+    @type dataset_train_loader: object
+    @param dataset_test_loader: dataset test loader
+    @type dataset_test_loader: object
+    @return: train_loss_history, train_acc_history, test_loss_history, test_acc_history, best_model
+    @rtype: list
+    """
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
     print('\nTraining stage on', device)
@@ -24,7 +36,7 @@ def training_stage(PARAMETERS, dataset_train_loader, dataset_test_loader):
     model = models.create_model(PARAMETERS)
     model.to(device)
 
-    print('\n---------------\nCNN Model Summary\n---------------\n')
+    print('\n---------------\nModel Summary\n---------------\n')
     summary(model, input_size=(10, 3, PARAMETERS['size'], PARAMETERS['size']))
 
     loss_fn = nn.CrossEntropyLoss()
@@ -81,6 +93,22 @@ def training_stage(PARAMETERS, dataset_train_loader, dataset_test_loader):
 
 
 def train(model, training_loader, optimizer, loss_function, device):
+    """
+    Train loop
+
+    @param model: model
+    @type model: object
+    @param training_loader: training loader
+    @type training_loader: object
+    @param optimizer: optimizer
+    @type optimizer: object
+    @param loss_function: loss
+    @type loss_function: object
+    @param device: device
+    @type device: object
+    @return: loss and accuracy
+    @rtype: list
+    """
     total_loss = 0
     avg_acc = []
 
@@ -113,6 +141,20 @@ def train(model, training_loader, optimizer, loss_function, device):
 
 
 def test(model, testing_loader, loss_function, device):
+    """
+    Test loop
+
+    @param model: model
+    @type model: object
+    @param testing_loader: testing loader
+    @type testing_loader: object
+    @param loss_function: loss
+    @type loss_function: object
+    @param device: device
+    @type device: object
+    @return: loss & accuracy
+    @rtype: list
+    """
     total_loss = 0
     avg_acc = []
 
@@ -138,6 +180,18 @@ def test(model, testing_loader, loss_function, device):
 
 
 def plot_training_results(train_loss_history, train_acc_history, test_loss_history, test_acc_history):
+    """
+    Plot training results (accuracy & loss)
+
+    @param train_loss_history: train loss
+    @type train_loss_history: list
+    @param train_acc_history: train accuracy
+    @type train_acc_history: list
+    @param test_loss_history: test loss
+    @type test_loss_history: list
+    @param test_acc_history: test accuracy
+    @type test_acc_history: list
+    """
     plt.figure()
     plt.plot(range(1, len(train_loss_history) + 1), train_loss_history, label='Train loss', color='brown')
     plt.plot(range(1, len(test_loss_history) + 1), test_loss_history, label='Test loss', color='darkgreen')
@@ -162,6 +216,20 @@ def plot_training_results(train_loss_history, train_acc_history, test_loss_histo
 
 
 def plot_confusion_matrix(PARAMETERS, dataset_test_loader, best_model, classes):
+    """
+    Plot confusion matrix
+
+    @param PARAMETERS: global parameters
+    @type PARAMETERS: dict
+    @param dataset_test_loader: test loader
+    @type dataset_test_loader: object
+    @param best_model: best model
+    @type best_model: object
+    @param classes: classes
+    @type classes: list
+    @return: model, prediction, labels
+    @rtype: list
+    """
     labels = range(0, PARAMETERS['num_classes'])
 
     model = models.create_model(PARAMETERS)
@@ -187,6 +255,16 @@ def plot_confusion_matrix(PARAMETERS, dataset_test_loader, best_model, classes):
 
 
 def get_test_predictions(dataloader, model):
+    """
+    Test prediction
+
+    @param dataloader: dataloader test
+    @type dataloader: object
+    @param model: model
+    @type model: object
+    @return: accuracy, prediction, labels
+    @rtype: list
+    """
     predictions = []
     real_labels = []
     start_time_testing = []

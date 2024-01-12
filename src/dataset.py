@@ -1,16 +1,27 @@
 import os
-
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, random_split
 import matplotlib.pyplot as plt
 from skimage import io
 import glob
+import random
 
+random.seed(42)
 
 def load_uc_merced_land_use_dataset(PARAMETERS, root, seed=42):
-    torch.manual_seed(seed)
+    """
+    Load UC Merced Land Use dataset
 
+    @param PARAMETERS: global parameters
+    @type PARAMETERS: dict
+    @param root: root directory
+    @type root: str
+    @param seed: seed
+    @type seed: integer
+    @return: train_dataset, test_dataset, train_dataloader, test_dataloader, classes
+    @rtype: list
+    """
     transform = transforms.Compose(
         [transforms.Resize((PARAMETERS['size'], PARAMETERS['size'])), transforms.ToTensor(), ])
 
@@ -32,6 +43,14 @@ def load_uc_merced_land_use_dataset(PARAMETERS, root, seed=42):
 
 
 def dataset_examples_each_class(data_train_dir, show=True):
+    """
+    Plot examples from each class
+
+    @param data_train_dir: train dir
+    @type data_train_dir: str
+    @param show: show
+    @type show: bool
+    """
     fig = plt.figure(figsize=(18, 9))
     for index, class_dir in enumerate(glob.glob(data_train_dir + '/*')):
         plt.subplot(5, 5, index + 1)
@@ -46,6 +65,12 @@ def dataset_examples_each_class(data_train_dir, show=True):
 
 
 def dataset_distribution(data_train_dir):
+    """
+    Plot dataset distribution
+
+    @param data_train_dir: train dir
+    @type data_train_dir: str
+    """
     all_classes_directory = glob.glob(data_train_dir + '/*')
     class_images_distribution = []
     class_labels = []
