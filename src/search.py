@@ -1,4 +1,5 @@
 import os
+import re
 import torch
 from PIL import Image
 from matplotlib import gridspec
@@ -7,6 +8,7 @@ import sqlite3
 import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+from scipy.spatial.distance import euclidean
 
 
 def extract_features(PARAMETERS, image_path, model):
@@ -99,7 +101,7 @@ def search_similar_images(PARAMETERS, database_path, query_image_path, model):
         image_id, filename, stored_features, class_name = result
         stored_features = np.frombuffer(stored_features, dtype=np.float32)
 
-        distance = round(np.linalg.norm(query_features - stored_features), 4)
+        distance = euclidean(query_features, stored_features)
         similar_images.append({'id': image_id, 'filename': filename, 'distance': distance, 'class': class_name})
 
     similar_images.sort(key=lambda x: x['distance'])
@@ -135,10 +137,9 @@ def search(PARAMETERS, model, image):
         img_sim = Image.open(top_image['filename'])
         ax_arr2 = plt.subplot(spec[1, i])
         ax_arr2.imshow(img_sim)
-        ax_arr2.set_title(f"Most similar image\n"
-                          f"Image ID: {top_image['id']},\n"
+        ax_arr2.set_title(f"Image ID: {top_image['id']},\n"
                           f"Class: {top_image['class']},\n"
-                          f"Distance: {top_image['distance']}")
+                          f"Distance: {round(float(top_image['distance']), 2)}")
 
     plt.subplots_adjust(hspace=0.5)
 
@@ -184,10 +185,26 @@ def search_similar_images_by_text(database_path, text_to_search):
     for result in tqdm(results, desc='Searching similar images based on text'):
         image_id, filename, stored_features, class_name = result
 
-        if class_name.lower() in text_to_search.lower():
+        if has_consecutive_letters(class_name.lower(), text_to_search.lower(), consecutive_count=5):
             similar_images.append({'id': image_id, 'filename': filename, 'distance': None, 'class': class_name})
 
     return similar_images
+
+
+def has_consecutive_letters(substring, text, consecutive_count):
+    """
+
+    @param substring: substring to search
+    @type substring: str
+    @param text: text
+    @type text: str
+    @param consecutive_count: letters
+    @type consecutive_count: int
+    @return: if text has more than consecutive_count letters
+    @rtype: bool
+    """
+    pattern = re.compile(f'(?=.*{re.escape(substring)}){{{consecutive_count},}}', re.IGNORECASE)
+    return bool(pattern.search(text))
 
 
 def search_by_text(PARAMETERS, text_to_search):

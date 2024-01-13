@@ -21,8 +21,22 @@ if __name__ == '__main__':
         'dataset_path': 'data/UCMerced_LandUse/Images'
     }
 
-    image_to_search = 'data/UCMerced_LandUse/Images/forest/forest11.tif'
-    text_to_search = 'I need a image with an airplane'
+    images_to_search = [
+        'data/testing/airplane2-test.jpg',
+        'data/testing/buildings-test.jpg',
+        'data/testing/forest-test.jpg',
+        'data/testing/intersection-test.png',
+        'data/testing/river-test2.jpg',
+        'data/testing/tennis-test.jpg',
+    ]
+    texts_to_search = [
+        'I need a image with an airplane',
+        'I want a river photo',
+        'I want to play tennis',
+        'I like forest',
+        'My car is stuck in an intersection',
+        'This city is full with buildings',
+    ]
 
     # dataset
     dataset.dataset_examples_each_class(PARAMETERS['dataset_path'], False)
@@ -52,8 +66,10 @@ if __name__ == '__main__':
 
     search.insert_all_images_from_database(PARAMETERS, features_model)
 
-    if image_to_search:
-        search.search(PARAMETERS, features_model, image_to_search)
+    if len(images_to_search) > 0:
+        for image_to_search in images_to_search:
+            search.search(PARAMETERS, features_model, image_to_search)
 
-    if text_to_search:
-        search.search_by_text(PARAMETERS, text_to_search)
+    if len(texts_to_search):
+        for text_to_search in texts_to_search:
+            search.search_by_text(PARAMETERS, text_to_search)
