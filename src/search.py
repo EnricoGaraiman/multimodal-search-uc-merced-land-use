@@ -210,8 +210,7 @@ def search_by_text(PARAMETERS, text_to_search):
         img_sim = Image.open(top_image['filename'])
         ax_arr2 = plt.subplot(spec[0, i])
         ax_arr2.imshow(img_sim)
-        ax_arr2.set_title(f"Most similar image\n"
-                          f"Image ID: {top_image['id']},\n"
+        ax_arr2.set_title(f"Image ID: {top_image['id']},\n"
                           f"Class: {top_image['class']}")
 
     plt.suptitle('Searched text: \n' + text_to_search)

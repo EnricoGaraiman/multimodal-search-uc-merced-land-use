@@ -9,11 +9,11 @@ import src.search as search
 if __name__ == '__main__':
     # parameters
     PARAMETERS = {
-        'epochs': 50,
+        'epochs': 100,
         'model': 'resnet',
         'early_stopping_epochs_no_best': 20,
         'size': 224,
-        'learning_rate': 1e-4,
+        'learning_rate': 1e-3,
         'train_ratio': 0.8,
         'num_classes': 21,
         'batch_size': 10,
@@ -32,25 +32,25 @@ if __name__ == '__main__':
         PARAMETERS, root=PARAMETERS['dataset_path'])
 
     # training
-    # train_loss_history, train_acc_history, test_loss_history, test_acc_history, best_model = train.training_stage(
-    #     PARAMETERS,
-    #     dataset_train_loader=dataset_train_loader,
-    #     dataset_test_loader=dataset_test_loader)
-    #
-    # # testing
-    # train.plot_training_results(train_loss_history=train_loss_history,
-    #                             train_acc_history=train_acc_history,
-    #                             test_loss_history=test_loss_history,
-    #                             test_acc_history=test_acc_history)
+    train_loss_history, train_acc_history, test_loss_history, test_acc_history, best_model = train.training_stage(
+        PARAMETERS,
+        dataset_train_loader=dataset_train_loader,
+        dataset_test_loader=dataset_test_loader)
+
+    # testing
+    train.plot_training_results(train_loss_history=train_loss_history,
+                                train_acc_history=train_acc_history,
+                                test_loss_history=test_loss_history,
+                                test_acc_history=test_acc_history)
     model, predictions, real_labels = train.plot_confusion_matrix(PARAMETERS,
                                                                   dataset_test_loader=dataset_test_loader,
-                                                                  best_model='results/finals/resnet34/best_80.pth',
+                                                                  best_model=best_model,
                                                                   classes=classes)
 
     # search
     features_model = torch.nn.Sequential(*(list(model.children())[:-1]))
 
-    # search.insert_all_images_from_database(PARAMETERS, features_model)
+    search.insert_all_images_from_database(PARAMETERS, features_model)
 
     if image_to_search:
         search.search(PARAMETERS, features_model, image_to_search)

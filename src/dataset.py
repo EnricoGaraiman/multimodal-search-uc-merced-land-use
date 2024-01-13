@@ -7,9 +7,9 @@ from skimage import io
 import glob
 import random
 
-random.seed(42)
+random.seed(101)
 
-def load_uc_merced_land_use_dataset(PARAMETERS, root, seed=42):
+def load_uc_merced_land_use_dataset(PARAMETERS, root, seed=101):
     """
     Load UC Merced Land Use dataset
 
