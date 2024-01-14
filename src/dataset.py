@@ -51,7 +51,7 @@ def dataset_examples_each_class(data_train_dir, show=True):
     @param show: show
     @type show: bool
     """
-    fig = plt.figure(figsize=(18, 9))
+    fig = plt.figure(figsize=(18, 16))
     for index, class_dir in enumerate(glob.glob(data_train_dir + '/*')):
         plt.subplot(5, 5, index + 1)
         img = io.imread(glob.glob(class_dir + '/*')[4])

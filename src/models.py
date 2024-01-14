@@ -1,3 +1,5 @@
+from torch import nn
+
 from src.CNN import CNN
 import torchvision.models as models
 
@@ -42,7 +44,8 @@ def create_resnet_model(PARAMETERS):
     @return: model
     @rtype: object
     """
-    model = models.resnet34(weights=None, num_classes=PARAMETERS['num_classes'])
+    model = models.resnet34(weights=models.ResNet34_Weights.IMAGENET1K_V1)
+    model.fc = nn.Linear(512, PARAMETERS['num_classes'])
 
     return model
 
